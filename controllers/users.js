@@ -20,7 +20,6 @@ module.exports.createUser = (req, res, next) => {
     .catch(next);
 };
 
-// LOGIN (Sign In)
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
