@@ -12,10 +12,6 @@ const validateURL = (value, helpers) => {
 
 router.get('/', getArticles);
 
-router.post('/', createArticle);
-
-router.delete('/:articleId', deleteArticle);
-
 router.post('/', celebrate({
   body: Joi.object().keys({
     keyword: Joi.string().required(),

@@ -1,7 +1,7 @@
 const Article = require('../models/article');
+const { NotFoundError, ForbiddenError } = require('../errors/CustomErrors'); 
 
 module.exports.getArticles = (req, res, next) => {
-
   Article.find({ owner: req.user._id })
     .then((articles) => res.send(articles))
     .catch(next);
@@ -15,7 +15,6 @@ module.exports.createArticle = (req, res, next) => {
     keyword, title, text, date, source, link, image, owner,
   })
     .then((article) => {
-
       const articleData = article.toObject();
       delete articleData.owner;
       res.status(201).send(articleData);
@@ -29,16 +28,13 @@ module.exports.deleteArticle = (req, res, next) => {
   Article.findById(articleId).select('+owner')
     .then((article) => {
       if (!article) {
-        throw new Error('ID de artículo no encontrado');
-        error.statusCode = 404;
-        throw error;
+        throw new NotFoundError('ID de artículo no encontrado');
       }
 
       if (article.owner.toString() !== req.user._id) {
-        throw new Error('No tienes permiso para eliminar este artículo');
-        error.statusCode = 403;
-        throw error;
+        throw new ForbiddenError('No tienes permiso para eliminar este artículo');
       }
+
       return Article.findByIdAndDelete(articleId);
     })
     .then((removedArticle) => res.send(removedArticle))
